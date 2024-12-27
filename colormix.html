@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Mixing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #game-container {
+            margin: 20px auto;
+            max-width: 600px;
+            border: 2px solid #333; /* Border around the game */
+            padding: 20px; /* Padding inside the box */
+            background-color: #ffffff; /* White background for the box */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for a 3D effect */
+        }
+        .color-box {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border: 2px solid #333;
+            position: relative;
+        }
+        .color-box span {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%); /* Centers the text horizontally */
+            font-size: 10px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        #answer-container {
+            margin-top: 20px;
+        }
+        .answer-box {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+            border: 2px solid #333;
+            cursor: pointer;
+            border-radius: 50%;
+            position: relative;
+        }
+        .answer-box span {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%); /* Centers the text horizontally */
+            font-size: 8px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Style for back button */
+        #back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #back-button:hover {
+            background-color: #0056b3;
+        }
+        .icon {
+            font-size: 30px; /* Increased size for the icons */
+        }
+    </style>
+</head>
+<body>
+    <h1>Color Mixing Game</h1>
+    <p>Mix the colors and select the result!</p>
+    
+    <div id="game-container">
+        <!-- Color boxes -->
+        <div id="color1" class="color-box"><span></span></div>
+        <div id="color2" class="color-box"><span></span></div>
+
+        <!-- Answer options -->
+        <div id="answer-container">
+            <!-- Answer options will be dynamically added here -->
+        </div>
+
+        <!-- Result message box -->
+        <p id="result" class="hidden"></p>
+
+        <!-- Back button with 🔙 icon -->
+        <button id="back-button" onclick="window.location.href = 'http://127.0.0.1';">🔙 Back</button>
+    </div>
+
+    <script>
+        const colors = [];
+
+        // Generate hundreds of colors programmatically
+        for (let r = 0; r <= 255; r += 51) {
+            for (let g = 0; g <= 255; g += 51) {
+                for (let b = 0; b <= 255; b += 51) {
+                    colors.push({ name: `${r},${g},${b}`, hex: `rgb(${r},${g},${b})` });
+                }
+            }
+        }
+
+        // Load sound files
+        const correctSound = new Audio('/sounds/correct-answer.mp3');
+        const incorrectSound = new Audio('/sounds/incorrect-answer.mp3');
+        const endGameSound = new Audio('/sounds/end-game.wav');
+
+        correctSound.load();
+        incorrectSound.load();
+        endGameSound.load();
+
+        // Smiley and sad icons
+        const smileyIcons = [
+            "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
+        ];
+        const sadIcons = [
+            "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
+        ];
+
+        const color1Box = document.getElementById("color1");
+        const color2Box = document.getElementById("color2");
+        const answerContainer = document.getElementById("answer-container");
+        const resultText = document.getElementById("result");
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function mixColors(color1, color2) {
+            const rgb1 = color1.hex.match(/\d+/g).map(Number);
+            const rgb2 = color2.hex.match(/\d+/g).map(Number);
+
+            const mixedR = Math.floor((rgb1[0] + rgb2[0]) / 2);
+            const mixedG = Math.floor((rgb1[1] + rgb2[1]) / 2);
+            const mixedB = Math.floor((rgb1[2] + rgb2[2]) / 2);
+
+            return `rgb(${mixedR},${mixedG},${mixedB})`; // Return in rgb format
+        }
+
+        function setupGame() {
+            resultText.classList.add("hidden");
+            answerContainer.innerHTML = "";
+
+            const color1 = getRandomColor();
+            let color2;
+            do {
+                color2 = getRandomColor();
+            } while (color1.name === color2.name);
+
+            color1Box.style.backgroundColor = color1.hex;
+            color1Box.querySelector("span").textContent = color1.name;
+
+            color2Box.style.backgroundColor = color2.hex;
+            color2Box.querySelector("span").textContent = color2.name;
+
+            const correctAnswer = mixColors(color1, color2);
+
+            const answers = new Set();
+            answers.add(correctAnswer); // Ensure the correct answer is included
+
+            while (answers.size < 5) {
+                const randomColor = getRandomColor().hex;
+                if (randomColor !== correctAnswer) {
+                    answers.add(randomColor);
+                }
+            }
+
+            Array.from(answers).sort(() => Math.random() - 0.5).forEach(answer => {
+                const answerBox = document.createElement("div");
+                answerBox.classList.add("answer-box");
+                answerBox.style.backgroundColor = answer;
+                const span = document.createElement("span");
+                span.textContent = answer.match(/\d+/g).join(","); // Display RGB value
+                answerBox.appendChild(span);
+                answerBox.addEventListener("click", () => {
+                    if (answer === correctAnswer) {
+                        resultText.textContent = "Correct! " + smileyIcons[Math.floor(Math.random() * smileyIcons.length)];
+                        resultText.classList.remove("hidden");
+                        resultText.classList.add("icon");  // Adding class for increased icon size
+                        correctSound.play();  // Play correct answer sound
+                        setTimeout(setupGame, 2000);
+                    } else {
+                        resultText.textContent = "Try again! " + sadIcons[Math.floor(Math.random() * sadIcons.length)];
+                        resultText.classList.remove("hidden");
+                        resultText.classList.add("icon");  // Adding class for increased icon size
+                        incorrectSound.play();  // Play incorrect answer sound
+                    }
+                });
+                answerContainer.appendChild(answerBox);
+            });
+        }
+
+        setupGame();
+    </script>
+</body>
+</html>
