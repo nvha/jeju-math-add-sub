@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Your Game</title>
+    <title>Choose Your Avatar</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
@@ -20,12 +20,66 @@
             color: #333;
         }
 
+        h2 {
+            margin-top: 20px;
+            font-size: 28px;
+            color: #555;
+        }
+
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .avatar-option {
+            width: 75px;
+            height: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-image {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .selected-avatar {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Enlarged avatar size */
+        .enlarged-avatar {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+
         .game-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 80vh;
             gap: 50px;
+            margin-top: 30px;
         }
 
         .game-box {
@@ -58,11 +112,23 @@
             color: #333;
             font-weight: bold;
         }
-
     </style>
 </head>
 <body>
-    <h1>Hello Nhat Yen Nguyen (Jeju)</h1>
+    <div class="avatar-container">
+        <!-- Avatar Option 1 -->
+        <div class="avatar-option" onclick="chooseAvatar('Nhat Yen Nguyen (Jeju)', 'jeju.JPG')">
+            <img src="https://nvha.github.io/avatar/jeju.JPG" alt="Avatar 1" class="avatar-image">
+        </div>
+
+        <!-- Avatar Option 2 -->
+        <div class="avatar-option" onclick="chooseAvatar('(Micky)', 'Micky.jpg')">
+            <img src="https://nvha.github.io/avatar/Micky.jpg" alt="Avatar 2" class="avatar-image">
+        </div>
+    </div>
+
+    <div id="selected-avatar" class="selected-avatar"></div>
+
     <h2>Choose Your Game</h2>
     <div class="game-container">
         <!-- Math Game box -->
@@ -89,5 +155,12 @@
             <p>Time Game</p>
         </div>
     </div>
+
+    <script>
+        function chooseAvatar(name, image) {
+            // Display the selected avatar's name and enlarged image
+            document.getElementById("selected-avatar").innerHTML = `Hello ${name} <br> <img src='avatar/${image}' class='enlarged-avatar' />`;
+        }
+    </script>
 </body>
 </html>
