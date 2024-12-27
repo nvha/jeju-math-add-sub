@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f9f9f9;
+            color: black;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 3px solid #ffcc00;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+        }
+        .question-box {
+            display: inline-block;
+            padding: 20px;
+            background-color: #fff9c4;
+            border: 2px solid;
+            border-radius: 10px;
+            font-size: 30px;
+        }
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .answer-button {
+            padding: 15px 25px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #e6f7ff;
+            transition: all 0.3s;
+        }
+        .answer-button:hover {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+        #question {
+            font-size: 25px;
+            color: #333;
+            font-weight: bold;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #score {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #ff6600;
+        }
+        .icon {
+            font-size: 50px;
+            margin-top: 10px;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        #end-game {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 15px;
+            border: 2px solid #ff0000;
+            background-color: #ffe6e6;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .mode-options, .limit-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .mode-option, .limit-option {
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #e6f7ff;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .mode-option:hover, .limit-option:hover {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+        .selected {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hello Nhat Yen Nguyen (Jeju)</h2>
+        <div>
+            <div class="mode-options">
+                <button class="mode-option" id="add" onclick="selectMode('add')">
+                    ➕
+                </button>
+                <button class="mode-option" id="sub" onclick="selectMode('sub')">
+                    ➖
+                </button>
+                <button class="mode-option" id="mix" onclick="selectMode('mix')">
+                    ➕➖
+                </button>
+            </div>
+        </div>
+        <br>
+        <div class="limit-options">
+            <button class="limit-option" id="limit10" onclick="selectLimit(10)">10</button>
+            <button class="limit-option" id="limit20" onclick="selectLimit(20)">20</button>
+            <button class="limit-option" id="limit30" onclick="selectLimit(30)">30</button>
+            <button class="limit-option" id="limit40" onclick="selectLimit(40)">40</button>
+            <button class="limit-option" id="limit50" onclick="selectLimit(50)">50</button>
+        </div>
+        <br><br>
+        <p id="progress">Question: 1/20</p>
+        <div class="question-box">
+            <p id="question"></p>
+        </div>
+        <div class="answers" id="answers"></div>
+        <div id="result"></div>
+        <div id="score"></div>
+        <button id="end-game" onclick="endGame()">🔄 End Game</button>
+    </div>
+
+    <script>
+        let num1, num2, correctAnswer;
+        let questionCount = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let mode = "add";
+        let limit = 10;
+        let incorrectAnswers = [];
+        let questionAnswered = false;
+        let modeSelected = false;  // To check if the mode has been selected already
+        let limitSelected = false; // To check if the limit has been selected already
+
+        // Load sound files
+        const correctSound = new Audio('/sounds/correct-answer.mp3');  // Correct answer sound (can replace with any)
+        const incorrectSound = new Audio('/sounds/incorrect-answer.mp3');  // Incorrect answer sound (can replace with any)
+        const endGameSound = new Audio('/sounds/end-game.wav');  // End game sound (can replace with any)
+		
+		correctSound.load();
+		incorrectSound.load();
+		endGameSound.load();
+
+        const smileyIcons = [
+            "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
+        ];
+        const sadIcons = [
+            "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
+        ];
+
+        function selectMode(selectedMode) {
+            if (modeSelected) return; // Prevent mode change after the first selection
+            mode = selectedMode;
+            modeSelected = true; // Mark mode as selected
+            document.querySelectorAll('.mode-option').forEach(button => {
+                if (button.id === selectedMode) {
+                    button.classList.add('selected');
+                } else {
+                    button.classList.remove('selected');
+                }
+            });
+            startGame();  // Start the game automatically when a mode is selected
+        }
+
+        function selectLimit(selectedLimit) {
+            if (limitSelected) return; // Prevent limit change after the first selection
+            limit = selectedLimit;
+            limitSelected = true; // Mark limit as selected
+            document.querySelectorAll('.limit-option').forEach(button => {
+                if (button.id === `limit${selectedLimit}`) {
+                    button.classList.add('selected');
+                } else {
+                    button.classList.remove('selected');
+                }
+            });
+        }
+
+        function startGame() {
+            questionCount = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            incorrectAnswers = [];
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            if (questionCount >= 20) {
+                showFinalScore();
+                return;
+            }
+
+            num1 = Math.floor(Math.random() * (limit + 1));
+            num2 = Math.floor(Math.random() * (limit + 1));
+
+            if (mode === "add") {
+                correctAnswer = num1 + num2;
+                document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+            } else if (mode === "sub") {
+                if (num1 < num2) [num1, num2] = [num2, num1];
+                correctAnswer = num1 - num2;
+                document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+            } else {
+                if (Math.random() < 0.5) {
+                    correctAnswer = num1 + num2;
+                    document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+                } else {
+                    if (num1 < num2) [num1, num2] = [num2, num1];
+                    correctAnswer = num1 - num2;
+                    document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+                }
+            }
+
+            const answers = generateAnswers(correctAnswer);
+            document.getElementById('answers').innerHTML = answers.map(answer => `<button class="answer-button" onclick="checkAnswer(${answer})">${answer}</button>`).join('');
+            questionAnswered = false;
+            questionCount++;
+            document.getElementById('progress').textContent = `Question: ${questionCount}/20`;
+        }
+
+        function generateAnswers(correctAnswer) {
+            const answers = [correctAnswer];
+            while (answers.length < 8) {
+                const randomAnswer = Math.floor(Math.random() * (limit * 2 + 1));
+                if (!answers.includes(randomAnswer)) {
+                    answers.push(randomAnswer);
+                }
+            }
+            return answers.sort(() => Math.random() - 0.5);
+        }
+
+        function checkAnswer(userAnswer) {
+            if (questionAnswered) return;
+
+            const answerButtons = document.querySelectorAll('.answer-button');
+            answerButtons.forEach(button => button.disabled = true);
+
+            if (userAnswer === correctAnswer) {
+                correctCount++;
+                questionAnswered = true;
+                correctSound.play();  // Play correct answer sound
+                showIcon('smiley', 'correct');
+                setTimeout(generateQuestion, 1000);
+            } else {
+                incorrectCount++;
+                incorrectAnswers.push(`${num1} ${mode === "add" ? "+" : "−"} ${num2} = ? Your answer: ${userAnswer}, Correct answer: ${correctAnswer}`);
+                incorrectSound.play();  // Play incorrect answer sound
+                showIcon('sad', 'incorrect');
+                answerButtons.forEach(button => button.disabled = false);
+            }
+        }
+
+        function showIcon(type, result) {
+            const iconContainer = document.getElementById('result');
+            const icon = type === 'smiley' ? smileyIcons[Math.floor(Math.random() * smileyIcons.length)] : sadIcons[Math.floor(Math.random() * sadIcons.length)];
+            const resultText = result === 'correct' ? `<span class="correct">${icon} Bravo!</span>` : `<span class="incorrect">${icon} Wrong answer!</span>`;
+            iconContainer.innerHTML = resultText;
+        }
+
+        function showFinalScore() {
+            const icon = correctCount >= 15 ? smileyIcons[Math.floor(Math.random() * smileyIcons.length)] : sadIcons[Math.floor(Math.random() * sadIcons.length)];
+            document.getElementById('score').textContent = `Your score: ${correctCount} / 20`;
+            document.getElementById('result').textContent = `Game Over! ${icon} ${correctCount >= 15 ? 'Well done!' : 'Try again!'}`;
+            endGameSound.play();  // Play end game notification sound
+        }
+
+        function endGame() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
