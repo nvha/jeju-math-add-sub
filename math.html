@@ -3,127 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Mixing Game</title>
+    <title>Math Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
+            margin-top: 50px;
+            background-color: #f9f9f9;
+            color: black;
         }
-        h1 {
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 3px solid #ffcc00;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+        }
+        .question-box {
+            display: inline-block;
+            padding: 20px;
+            background-color: #fff9c4;
+            border: 2px solid;
+            border-radius: 10px;
+            font-size: 30px;
+        }
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
         }
-        #game-container {
-            margin: 20px auto;
-            max-width: 600px;
-            border: 2px solid #333; /* Add border around the game */
-            padding: 20px; /* Add padding inside the box */
-            background-color: #ffffff; /* White background for the box */
-            border-radius: 10px; /* Optional: rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add shadow for a 3D effect */
-        }
-        .color-box {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            margin: 10px;
-            border: 2px solid #333;
-            position: relative;
-        }
-        .color-box span {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%); /* Centers the text horizontally */
-            font-size: 10px;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-        #answer-container {
-            margin-top: 20px;
-        }
-        .answer-box {
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            margin: 10px;
-            border: 2px solid #333;
+        .answer-button {
+            padding: 15px 25px;
+            font-size: 20px;
             cursor: pointer;
-            border-radius: 50%;
-            position: relative;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #e6f7ff;
+            transition: all 0.3s;
         }
-        .answer-box span {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%); /* Centers the text horizontally */
-            font-size: 8px;
+        .answer-button:hover {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+        #question {
+            font-size: 25px;
             color: #333;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 2px 4px;
-            border-radius: 3px;
+            font-weight: bold;
         }
-        .hidden {
-            display: none;
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
         }
-        /* Style for back button */
+        #score {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #ff6600;
+        }
+        .icon {
+            font-size: 50px;
+            margin-top: 10px;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        #end-game {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 15px;
+            border: 2px solid #ff0000;
+            background-color: #ffe6e6;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .mode-options, .limit-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .mode-option, .limit-option {
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #e6f7ff;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .mode-option:hover, .limit-option:hover {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+        .selected {
+            background-color: #99d6ff;
+            border-color: #0066cc;
+        }
+        /* Style for Back button */
         #back-button {
             margin-top: 20px;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 15px;
+            border: 2px solid #0099cc;
+            background-color: #ccf2ff;
             cursor: pointer;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            border-radius: 10px;
         }
         #back-button:hover {
-            background-color: #0056b3;
-        }
-        .icon {
-            font-size: 30px; /* Increased size for the icons */
+            background-color: #99ccff;
+            border-color: #0066cc;
         }
     </style>
 </head>
 <body>
-    <h1>Color Mixing Game</h1>
-    <p>Mix the colors and select the result!</p>
-    <div id="game-container">
-        <div id="color1" class="color-box"><span></span></div>
-        <div id="color2" class="color-box"><span></span></div>
+    <div class="container">
+        <h1>Math game</h1>
+        <div>
+            <div class="mode-options">
+                <button class="mode-option" id="add" onclick="selectMode('add')">
+                    ➕
+                </button>
+                <button class="mode-option" id="sub" onclick="selectMode('sub')">
+                    ➖
+                </button>
+                <button class="mode-option" id="mix" onclick="selectMode('mix')">
+                    ➕➖
+                </button>
+            </div>
+        </div>
+        <br>
+        <div class="limit-options">
+            <button class="limit-option" id="limit10" onclick="selectLimit(10)">10</button>
+            <button class="limit-option" id="limit20" onclick="selectLimit(20)">20</button>
+            <button class="limit-option" id="limit30" onclick="selectLimit(30)">30</button>
+            <button class="limit-option" id="limit40" onclick="selectLimit(40)">40</button>
+            <button class="limit-option" id="limit50" onclick="selectLimit(50)">50</button>
+        </div>
+        <br><br>
+        <p id="progress">Question: 1/20</p>
+        <div class="question-box">
+            <p id="question"></p>
+        </div>
+        <div class="answers" id="answers"></div>
+        <div id="result"></div>
+        <div id="score"></div>
+        <button id="end-game" onclick="endGame()">🔄 End Game</button>
+
+        <!-- Back Button -->
+        <button id="back-button" onclick="goBack()">🔙 Back</button>
     </div>
-    <div id="answer-container">
-        <!-- Answer options will be dynamically added here -->
-    </div>
-    <p id="result" class="hidden"></p>
-    <button id="back-button" onclick="window.location.href = 'http://127.0.0.1';">Back</button> <!-- Back button -->
 
     <script>
-        const colors = [];
-
-        // Generate hundreds of colors programmatically
-        for (let r = 0; r <= 255; r += 51) {
-            for (let g = 0; g <= 255; g += 51) {
-                for (let b = 0; b <= 255; b += 51) {
-                    colors.push({ name: `${r},${g},${b}`, hex: `rgb(${r},${g},${b})` });
-                }
-            }
+        // Function to handle back button click
+        function goBack() {
+            window.location.href = "https://nvha.github.io/jejugame/";  // Redirect to the base address
         }
 
+        let num1, num2, correctAnswer;
+        let questionCount = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let mode = "add";
+        let limit = 10;
+        let incorrectAnswers = [];
+        let questionAnswered = false;
+        let modeSelected = false;  // To check if the mode has been selected already
+        let limitSelected = false; // To check if the limit has been selected already
+
         // Load sound files
-        const correctSound = new Audio('https://nvha.github.io/jejugame/sounds/correct-answer.mp3');
-        const incorrectSound = new Audio('https://nvha.github.io/jejugame/sounds/incorrect-answer.mp3');
-        const endGameSound = new Audio('https://nvha.github.io/jejugame/sounds/end-game.wav');
+        const correctSound = new Audio('https://nvha.github.io/jejugame/sounds/correct-answer.mp3');  // Correct answer sound (can replace with any)
+        const incorrectSound = new Audio('https://nvha.github.io/jejugame/sounds/incorrect-answer.mp3');  // Incorrect answer sound (can replace with any)
+        const endGameSound = new Audio('https://nvha.github.io/jejugame/sounds/end-game.wav');  // End game sound (can replace with any)
+		
+		correctSound.load();
+		incorrectSound.load();
+		endGameSound.load();
 
-        correctSound.load();
-        incorrectSound.load();
-        endGameSound.load();
-
-        // Smiley and sad icons
         const smileyIcons = [
             "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
         ];
@@ -131,80 +192,124 @@
             "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
         ];
 
-        const color1Box = document.getElementById("color1");
-        const color2Box = document.getElementById("color2");
-        const answerContainer = document.getElementById("answer-container");
-        const resultText = document.getElementById("result");
-
-        function getRandomColor() {
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        function mixColors(color1, color2) {
-            const rgb1 = color1.hex.match(/\d+/g).map(Number);
-            const rgb2 = color2.hex.match(/\d+/g).map(Number);
-
-            const mixedR = Math.floor((rgb1[0] + rgb2[0]) / 2);
-            const mixedG = Math.floor((rgb1[1] + rgb2[1]) / 2);
-            const mixedB = Math.floor((rgb1[2] + rgb2[2]) / 2);
-
-            return `rgb(${mixedR},${mixedG},${mixedB})`; // Return in rgb format
-        }
-
-        function setupGame() {
-            resultText.classList.add("hidden");
-            answerContainer.innerHTML = "";
-
-            const color1 = getRandomColor();
-            let color2;
-            do {
-                color2 = getRandomColor();
-            } while (color1.name === color2.name);
-
-            color1Box.style.backgroundColor = color1.hex;
-            color1Box.querySelector("span").textContent = color1.name;
-
-            color2Box.style.backgroundColor = color2.hex;
-            color2Box.querySelector("span").textContent = color2.name;
-
-            const correctAnswer = mixColors(color1, color2);
-
-            const answers = new Set();
-            answers.add(correctAnswer); // Ensure the correct answer is included
-
-            while (answers.size < 5) {
-                const randomColor = getRandomColor().hex;
-                if (randomColor !== correctAnswer) {
-                    answers.add(randomColor);
+        function selectMode(selectedMode) {
+            if (modeSelected) return; // Prevent mode change after the first selection
+            mode = selectedMode;
+            modeSelected = true; // Mark mode as selected
+            document.querySelectorAll('.mode-option').forEach(button => {
+                if (button.id === selectedMode) {
+                    button.classList.add('selected');
+                } else {
+                    button.classList.remove('selected');
                 }
-            }
+            });
+            startGame();  // Start the game automatically when a mode is selected
+        }
 
-            Array.from(answers).sort(() => Math.random() - 0.5).forEach(answer => {
-                const answerBox = document.createElement("div");
-                answerBox.classList.add("answer-box");
-                answerBox.style.backgroundColor = answer;
-                const span = document.createElement("span");
-                span.textContent = answer.match(/\d+/g).join(","); // Display RGB value
-                answerBox.appendChild(span);
-                answerBox.addEventListener("click", () => {
-                    if (answer === correctAnswer) {
-                        resultText.textContent = "Correct! " + smileyIcons[Math.floor(Math.random() * smileyIcons.length)];
-                        resultText.classList.remove("hidden");
-                        resultText.classList.add("icon");  // Adding class for increased icon size
-                        correctSound.play();  // Play correct answer sound
-                        setTimeout(setupGame, 2000);
-                    } else {
-                        resultText.textContent = "Try again! " + sadIcons[Math.floor(Math.random() * sadIcons.length)];
-                        resultText.classList.remove("hidden");
-                        resultText.classList.add("icon");  // Adding class for increased icon size
-                        incorrectSound.play();  // Play incorrect answer sound
-                    }
-                });
-                answerContainer.appendChild(answerBox);
+        function selectLimit(selectedLimit) {
+            if (limitSelected) return; // Prevent limit change after the first selection
+            limit = selectedLimit;
+            limitSelected = true; // Mark limit as selected
+            document.querySelectorAll('.limit-option').forEach(button => {
+                if (button.id === `limit${selectedLimit}`) {
+                    button.classList.add('selected');
+                } else {
+                    button.classList.remove('selected');
+                }
             });
         }
 
-        setupGame();
+        function startGame() {
+            questionCount = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            incorrectAnswers = [];
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            if (questionCount >= 20) {
+                showFinalScore();
+                return;
+            }
+
+            num1 = Math.floor(Math.random() * (limit + 1));
+            num2 = Math.floor(Math.random() * (limit + 1));
+
+            if (mode === "add") {
+                correctAnswer = num1 + num2;
+                document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+            } else if (mode === "sub") {
+                if (num1 < num2) [num1, num2] = [num2, num1];
+                correctAnswer = num1 - num2;
+                document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+            } else {
+                if (Math.random() < 0.5) {
+                    correctAnswer = num1 + num2;
+                    document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+                } else {
+                    if (num1 < num2) [num1, num2] = [num2, num1];
+                    correctAnswer = num1 - num2;
+                    document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+                }
+            }
+
+            const answers = generateAnswers(correctAnswer);
+            document.getElementById('answers').innerHTML = answers.map(answer => `<button class="answer-button" onclick="checkAnswer(${answer})">${answer}</button>`).join(''); 
+            questionAnswered = false;
+            questionCount++;
+            document.getElementById('progress').textContent = `Question: ${questionCount}/20`;
+        }
+
+        function generateAnswers(correctAnswer) {
+            const answers = [correctAnswer];
+            while (answers.length < 8) {
+                const randomAnswer = Math.floor(Math.random() * (limit * 2 + 1));
+                if (!answers.includes(randomAnswer)) {
+                    answers.push(randomAnswer);
+                }
+            }
+            return answers.sort(() => Math.random() - 0.5);
+        }
+
+        function checkAnswer(userAnswer) {
+            if (questionAnswered) return;
+
+            const answerButtons = document.querySelectorAll('.answer-button');
+            answerButtons.forEach(button => button.disabled = true);
+
+            if (userAnswer === correctAnswer) {
+                correctCount++;
+                questionAnswered = true;
+                correctSound.play();  // Play correct answer sound
+                showIcon('smiley', 'correct');
+                setTimeout(generateQuestion, 1000);
+            } else {
+                incorrectCount++;
+                incorrectAnswers.push(`${num1} ${mode === "add" ? "+" : "−"} ${num2} = ? Your answer: ${userAnswer}, Correct answer: ${correctAnswer}`);
+                incorrectSound.play();  // Play incorrect answer sound
+                showIcon('sad', 'incorrect');
+                answerButtons.forEach(button => button.disabled = false);
+            }
+        }
+
+        function showIcon(type, result) {
+            const iconContainer = document.getElementById('result');
+            const icon = type === 'smiley' ? smileyIcons[Math.floor(Math.random() * smileyIcons.length)] : sadIcons[Math.floor(Math.random() * sadIcons.length)];
+            const resultText = result === 'correct' ? `<span class="correct">${icon} Bravo!</span>` : `<span class="incorrect">${icon} Wrong answer!</span>`;
+            iconContainer.innerHTML = resultText;
+        }
+
+        function showFinalScore() {
+            const icon = correctCount >= 15 ? smileyIcons[Math.floor(Math.random() * smileyIcons.length)] : sadIcons[Math.floor(Math.random() * sadIcons.length)];
+            document.getElementById('score').textContent = `Your score: ${correctCount} / 20`;
+            document.getElementById('result').textContent = `Game Over! ${icon} ${correctCount >= 15 ? 'Well done!' : 'Try again!'}`;
+            endGameSound.play();  // Play end game notification sound
+        }
+
+        function endGame() {
+            location.reload();
+        }
     </script>
 </body>
 </html>
