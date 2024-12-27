@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Time Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 32px;
+        }
+
+        #game-container {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #question-container {
+            margin-bottom: 20px;
+        }
+
+        .watch {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: relative;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+        }
+
+        .hand {
+            position: absolute;
+            background-color: #333;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0);
+        }
+
+        .hour-hand {
+            width: 8px;  /* Thicker hour hand */
+            height: 60px;
+            border-radius: 4px;
+            background-color: darkred;  /* Dark red color for the hour hand */
+        }
+
+        .minute-hand {
+            width: 3px;
+            height: 90px;
+            border-radius: 1.5px;
+        }
+
+        .number {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            transform-origin: center;
+        }
+
+        .bold-number {
+            font-size: 20px; /* Bigger font size for 12, 3, 6, 9 */
+            font-weight: bold;
+        }
+
+        .option {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .option:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        /* Style for the Back Button */
+        #back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: lightgray;  /* Changed to light gray */
+            color: black;  /* Dark text for better contrast */
+            border: none;
+            border-radius: 5px;
+        }
+
+        #back-button:hover {
+            background-color: #d3d3d3;  /* Slightly darker gray when hovering */
+        }
+    </style>
+</head>
+<body>
+    <h1>Learn Time Game</h1>
+    <div id="game-container">
+        <div id="question-container">
+            <div class="watch" id="analog-clock"></div>
+        </div>
+        <div id="options"></div>
+        <div id="feedback"></div>
+        
+        <!-- Back Button -->
+        <button id="back-button" onclick="goBack()">🔙 Back</button>
+    </div>
+
+    <!-- Correct and Incorrect Sound Effects -->
+    <audio id="correct-sound" src="/sounds/correct-answer.mp3"></audio>
+    <audio id="incorrect-sound" src="/sounds/incorrect-answer.mp3"></audio>
+
+    <script>
+        const smileyIcons = [
+            "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
+        ];
+        const sadIcons = [
+            "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
+        ];
+
+        const analogClock = document.getElementById("analog-clock");
+        const optionsContainer = document.getElementById("options");
+        const feedbackContainer = document.getElementById("feedback");
+        const correctSound = document.getElementById("correct-sound");
+        const incorrectSound = document.getElementById("incorrect-sound");
+
+        const neutralColors = ["#fdfd96", "#ffdab9", "#e6e6fa", "#f0e68c", "#dcdcdc", "#d3f8e2"];
+
+        function generateRandomTime() {
+            const hour = Math.floor(Math.random() * 12) || 12;
+            const minute = Math.floor(Math.random() * 4) * 15;
+            return { hour, minute };
+        }
+
+        function formatTime(hour, minute) {
+            return `${hour}:${minute.toString().padStart(2, "0")}`;
+        }
+
+        function renderClock(hour, minute) {
+            analogClock.innerHTML = "";
+            analogClock.style.backgroundColor = neutralColors[Math.floor(Math.random() * neutralColors.length)];
+
+            const hourHand = document.createElement("div");
+            hourHand.className = "hand hour-hand";
+            hourHand.style.transform = `translate(-50%, 0) rotate(${hour * 30 + minute * 0.5}deg)`;
+
+            const minuteHand = document.createElement("div");
+            minuteHand.className = "hand minute-hand";
+            minuteHand.style.transform = `translate(-50%, 0) rotate(${minute * 6}deg)`;
+
+            analogClock.appendChild(hourHand);
+            analogClock.appendChild(minuteHand);
+
+            // Add numbers to the clock (properly centered)
+            const radius = 80; // Distance from the center to place the numbers
+            const clockCenterX = 100; // Center position of the clock
+            const clockCenterY = 100; // Center position of the clock
+
+            for (let i = 1; i <= 12; i++) {
+                const number = document.createElement("div");
+                number.className = "number";
+                const angle = (i * 30) * (Math.PI / 180); // Angle in radians for each number
+                const x = clockCenterX + radius * Math.sin(angle); // x coordinate of the number
+                const y = clockCenterY - radius * Math.cos(angle); // y coordinate of the number
+                number.style.left = `${x - 6}px`; // Adjust position to be centered (shifted right)
+                number.style.top = `${y - 10}px`;  // Adjust position to be centered (shifted down)
+
+                if ([12, 3, 6, 9].includes(i)) {
+                    number.classList.add("bold-number"); // Apply bold and larger size for 12, 3, 6, 9
+                }
+				
+				// Move the "12" number slightly to the left
+				if (i === 12) {
+					number.style.left = `${x - 10}px`; // Shift "12" more to the left
+				}
+
+                number.textContent = i;
+                analogClock.appendChild(number);
+            }
+        }
+
+        function renderOptions(correctTime) {
+            optionsContainer.innerHTML = "";
+            feedbackContainer.innerHTML = "";
+
+            const correctIndex = Math.floor(Math.random() * 6);
+            const options = Array.from({ length: 6 }, (_, i) => {
+                if (i === correctIndex) return correctTime;
+
+                const hour = Math.floor(Math.random() * 12) || 12;
+                const minute = Math.floor(Math.random() * 4) * 15;
+                return formatTime(hour, minute);
+            });
+
+            options.forEach((option) => {
+                const button = document.createElement("button");
+                button.className = "option";
+                button.textContent = option;
+
+                button.addEventListener("click", () => {
+                    if (option === correctTime) {
+                        feedbackContainer.innerHTML = `${smileyIcons[Math.floor(Math.random() * smileyIcons.length)]} Correct!`;
+                        feedbackContainer.style.color = "green";
+                        correctSound.play();
+                        setTimeout(startGame, 2000);
+                    } else {
+                        feedbackContainer.innerHTML = `${sadIcons[Math.floor(Math.random() * sadIcons.length)]} Incorrect!`;
+                        feedbackContainer.style.color = "red";
+                        incorrectSound.play();
+                    }
+                });
+
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function startGame() {
+            const { hour, minute } = generateRandomTime();
+            const correctTime = formatTime(hour, minute);
+            renderClock(hour, minute);
+            renderOptions(correctTime);
+        }
+
+        function goBack() {
+            window.history.back();  // Goes back to the previous page
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
