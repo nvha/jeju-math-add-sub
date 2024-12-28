@@ -6,114 +6,159 @@
     <title>Color Mixing Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff;
+            text-align: center;
+            background: linear-gradient(to bottom, #74ebd5, #9face6);
+            transition: background 0.5s ease;
+            color: #333;
         }
+
         h1 {
             margin-top: 20px;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+
+        p {
+            font-size: 1.2em;
+            color: #f5f5f5;
+        }
+
         #game-container {
             margin: 20px auto;
             max-width: 600px;
-            border: 2px solid #333; /* Border around the game */
-            padding: 20px; /* Padding inside the box */
-            background-color: #ffffff; /* White background for the box */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for a 3D effect */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
+
+        .question-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         .color-box {
             display: inline-block;
-            width: 100px;
-            height: 100px;
+            width: 130px;
+            height: 130px;
             margin: 10px;
-            border: 2px solid #333;
+            border: 2px solid #ffffff;
             position: relative;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
+
         .color-box span {
             position: absolute;
             bottom: 5px;
             left: 50%;
-            transform: translateX(-50%); /* Centers the text horizontally */
+            transform: translateX(-50%);
             font-size: 10px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
+
+        .operator {
+            font-size: 3em;
             color: #333;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 2px 4px;
-            border-radius: 3px;
+            margin: 0 10px;
         }
-        #answer-container {
-            margin-top: 20px;
-        }
+
         .answer-box {
-            display: inline-block;
-            width: 80px;
-            height: 80px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 90px;
+            height: 90px;
             margin: 10px;
-            border: 2px solid #333;
-            cursor: pointer;
+            border: 2px solid #ffffff;
             border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
             position: relative;
         }
+
+        .answer-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
         .answer-box span {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%); /* Centers the text horizontally */
             font-size: 8px;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.7);
+            font-weight: bold;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 2px 4px;
             border-radius: 3px;
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
         }
-        .hidden {
-            display: none;
+
+        #result {
+            font-size: 1.5em;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
         }
-        /* Style for back button */
+
         #back-button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            background-color: #007BFF;
-            color: white;
+            background: lightgray;
+            color: black;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s, transform 0.3s;
         }
+
         #back-button:hover {
-            background-color: #0056b3;
-        }
-        .icon {
-            font-size: 30px; /* Increased size for the icons */
+            transform: scale(1.05);
+            background: #d3d3d3;
         }
     </style>
 </head>
 <body>
     <h1>Color Mixing Game</h1>
     <p>Mix the colors and select the result!</p>
-    
     <div id="game-container">
-        <!-- Color boxes -->
-        <div id="color1" class="color-box"><span></span></div>
-        <div id="color2" class="color-box"><span></span></div>
-
-        <!-- Answer options -->
-        <div id="answer-container">
-            <!-- Answer options will be dynamically added here -->
+        <div class="question-container">
+            <div id="color1" class="color-box"><span></span></div>
+            <div class="operator">➕</div>
+            <div id="color2" class="color-box"><span></span></div>
         </div>
 
-        <!-- Result message box -->
+        <div id="answer-container"></div>
+
         <p id="result" class="hidden"></p>
 
-        <!-- Back button with 🔙 icon -->
         <button id="back-button" onclick="window.location.href = 'https://nvha.github.io/jejugame/';">🔙 Back</button>
     </div>
 
     <script>
-        const colors = [];
+        const smileyIcons = [
+            "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
+        ];
+        const sadIcons = [
+            "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
+        ];
 
-        // Generate hundreds of colors programmatically
+        const colors = [];
         for (let r = 0; r <= 255; r += 51) {
             for (let g = 0; g <= 255; g += 51) {
                 for (let b = 0; b <= 255; b += 51) {
@@ -122,22 +167,8 @@
             }
         }
 
-        // Load sound files
         const correctSound = new Audio('https://nvha.github.io/jejugame/sounds/correct-answer.mp3');
         const incorrectSound = new Audio('https://nvha.github.io/jejugame/sounds/incorrect-answer.mp3');
-        const endGameSound = new Audio('https://nvha.github.io/jejugame/sounds/end-game.wav');
-
-        correctSound.load();
-        incorrectSound.load();
-        endGameSound.load();
-
-        // Smiley and sad icons
-        const smileyIcons = [
-            "😊", "😀", "😁", "😄", "😆", "😎", "😍", "🥳", "🎉", "🌟", "😇", "💖", "🎈", "🎶", "✨", "😺", "🐶", "🐱", "🦄", "🚀", "🍀", "🌈", "🍎", "🥰"
-        ];
-        const sadIcons = [
-            "😔", "😢", "😭", "😟", "😕", "☹️", "🙁", "💔", "👎", "⚠️", "🥀", "💣", "😿", "🐾", "🔇", "⛈️", "🌪️", "🛑", "⚡", "🥶", "📉", "🔧", "🧨", "❌"
-        ];
 
         const color1Box = document.getElementById("color1");
         const color2Box = document.getElementById("color2");
@@ -156,10 +187,18 @@
             const mixedG = Math.floor((rgb1[1] + rgb2[1]) / 2);
             const mixedB = Math.floor((rgb1[2] + rgb2[2]) / 2);
 
-            return `rgb(${mixedR},${mixedG},${mixedB})`; // Return in rgb format
+            return `rgb(${mixedR},${mixedG},${mixedB})`;
+        }
+
+        function randomBackgroundColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            document.body.style.background = `rgb(${r},${g},${b})`;
         }
 
         function setupGame() {
+            randomBackgroundColor();
             resultText.classList.add("hidden");
             answerContainer.innerHTML = "";
 
@@ -178,7 +217,7 @@
             const correctAnswer = mixColors(color1, color2);
 
             const answers = new Set();
-            answers.add(correctAnswer); // Ensure the correct answer is included
+            answers.add(correctAnswer);
 
             while (answers.size < 5) {
                 const randomColor = getRandomColor().hex;
@@ -192,20 +231,18 @@
                 answerBox.classList.add("answer-box");
                 answerBox.style.backgroundColor = answer;
                 const span = document.createElement("span");
-                span.textContent = answer.match(/\d+/g).join(","); // Display RGB value
+                span.textContent = answer.match(/\d+/g).join(",");
                 answerBox.appendChild(span);
                 answerBox.addEventListener("click", () => {
                     if (answer === correctAnswer) {
                         resultText.textContent = "Correct! " + smileyIcons[Math.floor(Math.random() * smileyIcons.length)];
                         resultText.classList.remove("hidden");
-                        resultText.classList.add("icon");  // Adding class for increased icon size
-                        correctSound.play();  // Play correct answer sound
+                        correctSound.play();
                         setTimeout(setupGame, 2000);
                     } else {
                         resultText.textContent = "Try again! " + sadIcons[Math.floor(Math.random() * sadIcons.length)];
                         resultText.classList.remove("hidden");
-                        resultText.classList.add("icon");  // Adding class for increased icon size
-                        incorrectSound.play();  // Play incorrect answer sound
+                        incorrectSound.play();
                     }
                 });
                 answerContainer.appendChild(answerBox);
