@@ -78,8 +78,9 @@
             border: 3px solid;
             border-radius: 10px;
             font-size: 30px;
-            margin-top: 30px;
+            margin-top: 00px;
 			font-weight: bold;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Added shadow effect */
         }
         .answers {
             display: flex;
@@ -156,9 +157,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Math Challenge</h2>
-		
+	<h1>Math Challenge</h1>
+	
+    <div class="container">		
 		<div class="limit-options">
             <button class="limit-option" id="limit10" onclick="selectLimit(10)">10</button>
             <button class="limit-option" id="limit20" onclick="selectLimit(20)">20</button>
@@ -186,10 +187,9 @@
         <div id="result"></div>
         <div id="score"></div>
         <button id="end-game" onclick="endGame()">🔄 End Game</button>
+        <button id="back-button" onclick="goBack()">🔙 Back</button>
 		
 		<div id="incorrect-answers" style="margin-top: 20px;"></div>
-
-        <button id="back-button" onclick="goBack()">🔙 Back</button>
     </div>
 
     <script>
