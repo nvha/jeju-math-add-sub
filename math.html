@@ -186,6 +186,8 @@
         <div id="result"></div>
         <div id="score"></div>
         <button id="end-game" onclick="endGame()">🔄 End Game</button>
+		
+		<div id="incorrect-answers" style="margin-top: 20px;"></div>
 
         <button id="back-button" onclick="goBack()">🔙 Back</button>
     </div>
@@ -331,6 +333,27 @@
             document.getElementById('result').textContent = `Game Over! ${icon} ${correctCount >= 15 ? 'Well done!' : 'Try again!'}`;
             endGameSound.play();
         }
+		
+		function showFinalScore() {
+			const icon = correctCount >= 15 ? smileyIcons[Math.floor(Math.random() * smileyIcons.length)] : sadIcons[Math.floor(Math.random() * sadIcons.length)];
+			document.getElementById('score').textContent = `Your score: ${correctCount} / 20`;
+			document.getElementById('result').textContent = `Game Over! ${icon} ${correctCount >= 15 ? 'Well done!' : 'Try again!'}`;
+
+			// Show incorrect answers
+			const incorrectAnswersContainer = document.getElementById('incorrect-answers');
+			if (incorrectAnswers.length > 0) {
+				let incorrectAnswersHtml = "<h3>Incorrect Answers:</h3><ul>";
+				incorrectAnswers.forEach(answer => {
+					incorrectAnswersHtml += `<li>${answer}</li>`;
+				});
+				incorrectAnswersHtml += "</ul>";
+				incorrectAnswersContainer.innerHTML = incorrectAnswersHtml;
+			} else {
+				incorrectAnswersContainer.innerHTML = "<h3>No incorrect answers!</h3>";
+		}
+
+    endGameSound.play();
+}
 
         function endGame() {
             location.reload();
