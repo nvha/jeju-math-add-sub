@@ -334,7 +334,7 @@
 						feedbackContainer.innerHTML = `${smileyIcons[Math.floor(Math.random() * smileyIcons.length)]} Correct!`;
 						feedbackContainer.style.color = "green";
 						correctSound.play();
-						setTimeout(startGame, 2000); // Start a new question after 2 seconds
+						setTimeout(startGame, 1000); // Start a new question after 2 seconds
 					} else {
 						feedbackContainer.innerHTML = `${sadIcons[Math.floor(Math.random() * sadIcons.length)]} Incorrect!`;
 						feedbackContainer.style.color = "red";
