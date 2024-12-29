@@ -23,14 +23,22 @@
         }
 
         #game-container {
-            margin: 20px auto;
-            max-width: 700px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            border: 2px solid #007BFF;
-        }
+			margin: auto;
+			max-width: 600px;
+			padding: 20px;
+			background-color: #ffffff;
+			border-radius: 15px;
+			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+			border: 2px solid #007BFF;
+		}
+
+		/* Add a media query for smaller screens */
+		@media (max-width: 600px) {
+			#game-container {
+				margin: 10px; /* Add some margin to prevent the border from touching the edges */
+				padding: 15px; /* Adjust padding if necessary */
+			}
+		}
 
         #question-container {
             margin-bottom: 30px;
