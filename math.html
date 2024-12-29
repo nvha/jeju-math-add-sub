@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 10px;
             background-color: #f9f9f9;
             color: black;
         }
@@ -32,11 +32,11 @@
             gap: 15px;
         }
         .mode-option {
-            padding: 15px 20px;
+            padding: 17px 21px;
             font-size: 25px;
             cursor: pointer;
             border: 2px solid #ccc;
-            border-radius: 10px;
+            border-radius: 20px;
             background-color: #e6f7ff;
             transition: all 0.3s;
         }
@@ -55,8 +55,8 @@
             margin-top: 20px;
         }
         .limit-option {
-            padding: 10px 20px;
-            font-size: 20px;
+            padding: 15px 15px;
+            font-size: 15px;
             cursor: pointer;
             border: 2px solid #ccc;
             border-radius: 10px;
@@ -73,7 +73,7 @@
         }
         .question-box {
             display: inline-block;
-            padding: 10px;
+            padding: 1px 20px;
             background-color: #fff9c4;
             border: 3px solid;
             border-radius: 10px;
@@ -81,17 +81,19 @@
             margin-top: 00px;
 			font-weight: bold;
 			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Added shadow effect */
+			line-height: 0.5;
         }
         .answers {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .answer-button {
             padding: 15px 25px;
             font-size: 20px;
+			font-weight: bold;
             cursor: pointer;
             border: 2px solid #ccc;
             border-radius: 10px;
@@ -160,6 +162,7 @@
 	<h1>Math Challenge</h1>
 	
     <div class="container">		
+		<b>Limited number:</b>
 		<div class="limit-options">
             <button class="limit-option" id="limit10" onclick="selectLimit(10)">10</button>
             <button class="limit-option" id="limit20" onclick="selectLimit(20)">20</button>
@@ -168,7 +171,7 @@
             <button class="limit-option" id="limit50" onclick="selectLimit(50)">50</button>
         </div>
 		
-		<p> </p>
+		<p><b>Operator:</b></p>
 		
         <div class="mode-options">
             <button class="mode-option" id="add" onclick="selectMode('add')">➕</button>
@@ -259,49 +262,68 @@
         }
 
         function generateQuestion() {
-            if (questionCount >= 20) {
-                showFinalScore();
-                return;
-            }
+			if (questionCount >= 20) {
+				showFinalScore();
+				return;
+			}
 
-            num1 = Math.floor(Math.random() * (limit + 1));
-            num2 = Math.floor(Math.random() * (limit + 1));
+			// Generate random numbers based on the selected limit
+			num1 = Math.floor(Math.random() * (limit + 1));  // num1 can be between 0 and the limit
+			num2 = Math.floor(Math.random() * (limit + 1));  // num2 can be between 0 and the limit
 
-            if (mode === "add") {
-                correctAnswer = num1 + num2;
-                document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
-            } else if (mode === "sub") {
-                if (num1 < num2) [num1, num2] = [num2, num1];
-                correctAnswer = num1 - num2;
-                document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
-            } else {
-                if (Math.random() < 0.5) {
-                    correctAnswer = num1 + num2;
-                    document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
-                } else {
-                    if (num1 < num2) [num1, num2] = [num2, num1];
-                    correctAnswer = num1 - num2;
-                    document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
-                }
-            }
+			// Ensure valid operation
+			if (mode === "add") {
+				// Ensure the sum doesn't exceed the limit
+				if (num1 + num2 > limit) {
+					num1 = Math.floor(Math.random() * (limit + 1));  // Re-generate num1
+					num2 = Math.floor(Math.random() * (limit + 1));  // Re-generate num2
+				}
+				correctAnswer = num1 + num2;
+				document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+			} else if (mode === "sub") {
+				// Ensure the subtraction result is non-negative and num1 >= num2
+				if (num1 < num2) [num1, num2] = [num2, num1];  // Swap to avoid negative result
+				correctAnswer = num1 - num2;
+				document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+			} else {
+				// Mixed mode (either add or subtract)
+				if (Math.random() < 0.5) {
+					if (num1 + num2 > limit) {
+						num1 = Math.floor(Math.random() * (limit + 1));  // Re-generate num1
+						num2 = Math.floor(Math.random() * (limit + 1));  // Re-generate num2
+					}
+					correctAnswer = num1 + num2;
+					document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
+				} else {
+					if (num1 < num2) [num1, num2] = [num2, num1];  // Swap to avoid negative result
+					correctAnswer = num1 - num2;
+					document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
+				}
+			}
 
-            const answers = generateAnswers(correctAnswer);
-            document.getElementById('answers').innerHTML = answers.map(answer => `<button class="answer-button" onclick="checkAnswer(${answer})">${answer}</button>`).join('');
-            questionAnswered = false;
-            questionCount++;
-            document.getElementById('progress').textContent = `Question: ${questionCount}/20`;
-        }
+			// Generate possible answers, ensuring they are within the limit
+			const answers = generateAnswers(correctAnswer);
+			document.getElementById('answers').innerHTML = answers.map(answer => `<button class="answer-button" onclick="checkAnswer(${answer})">${answer}</button>`).join('');
+			questionAnswered = false;
+			questionCount++;
+			document.getElementById('progress').textContent = `Question: ${questionCount}/20`;
+		}
+
 
         function generateAnswers(correctAnswer) {
-            const answers = [correctAnswer];
-            while (answers.length < 8) {
-                const randomAnswer = Math.floor(Math.random() * (limit * 2 + 1));
-                if (!answers.includes(randomAnswer)) {
-                    answers.push(randomAnswer);
-                }
-            }
-            return answers.sort(() => Math.random() - 0.5);
-        }
+			const answers = [correctAnswer];
+
+			// Generate incorrect answers within the limit range
+			while (answers.length < 8) {
+				let randomAnswer = Math.floor(Math.random() * (limit + 1)); // Ensure it stays within the limit
+				if (!answers.includes(randomAnswer)) {
+					answers.push(randomAnswer);
+				}
+			}
+			
+			// Shuffle answers to mix correct and incorrect ones
+			return answers.sort(() => Math.random() - 0.5);
+		}
 
         function checkAnswer(userAnswer) {
             if (questionAnswered) return;
