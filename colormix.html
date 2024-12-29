@@ -18,23 +18,31 @@
         h1 {
             margin-top: 20px;
             font-size: 2.5em;
-            color: #fff;
+            color: #000000;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         p {
             font-size: 1.2em;
-            color: #f5f5f5;
+            color: #000000;
         }
 
         #game-container {
-            margin: 20px auto;
+            margin: auto;
             max-width: 600px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.85);
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
+		
+		/* Add a media query for smaller screens */
+		@media (max-width: 600px) {
+			#game-container {
+				margin: 10px; /* Add some margin to prevent the border from touching the edges */
+				padding: 15px; /* Adjust padding if necessary */
+			}
+		}
 
         .question-container {
             display: flex;
@@ -191,11 +199,46 @@
         }
 
         function randomBackgroundColor() {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            document.body.style.background = `rgb(${r},${g},${b})`;
-        }
+			// Extended neutral colors
+			const neutralColors = [
+				"rgb(245, 245, 245)", // Light Gray
+				"rgb(230, 230, 230)", // Grayish White
+				"rgb(240, 240, 240)", // Off White
+				"rgb(250, 235, 215)", // Antique White
+				"rgb(245, 222, 179)", // Wheat
+				"rgb(255, 239, 213)", // Papaya Whip
+				"rgb(255, 248, 220)", // Cornsilk
+				"rgb(240, 255, 240)", // Honeydew
+				"rgb(255, 250, 240)", // Floral White
+				"rgb(224, 224, 224)", // Gainsboro
+				"rgb(211, 211, 211)", // Light Gray
+				"rgb(220, 220, 220)", // Light Slate Gray
+				"rgb(255, 228, 196)", // Bisque
+				"rgb(245, 245, 220)", // Beige
+				"rgb(238, 232, 170)", // Pale Goldenrod
+				"rgb(255, 245, 238)", // Seashell
+				"rgb(253, 245, 230)", // Old Lace
+				"rgb(250, 240, 230)", // Linen
+				"rgb(240, 255, 255)", // Azure
+				"rgb(248, 248, 255)", // Ghost White
+				"rgb(245, 255, 250)", // Mint Cream
+				"rgb(240, 248, 255)", // Alice Blue
+				"rgb(255, 250, 250)", // Snow
+				"rgb(224, 255, 255)", // Light Cyan
+				"rgb(255, 228, 225)", // Misty Rose
+				"rgb(255, 222, 173)", // Navajo White
+				"rgb(255, 240, 245)", // Lavender Blush
+				"rgb(255, 245, 238)", // Seashell
+				"rgb(248, 222, 126)", // Soft Amber
+				"rgb(240, 230, 140)", // Khaki
+				"rgb(220, 220, 220)", // Silver Sand
+				"rgb(237, 233, 216)", // White Sand
+			];
+
+			const randomIndex = Math.floor(Math.random() * neutralColors.length);
+			document.body.style.background = neutralColors[randomIndex];
+		}
+
 
         function setupGame() {
             randomBackgroundColor();
