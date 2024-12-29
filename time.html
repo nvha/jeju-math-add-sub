@@ -313,14 +313,21 @@
 			optionsContainer.innerHTML = "";
 			feedbackContainer.innerHTML = "";
 
-			const correctIndex = Math.floor(Math.random() * 6); // Correct option placed at a random index
-			const options = Array.from({ length: 6 }, (_, i) => {
-				if (i === correctIndex) return correctTime;
+			const correctIndex = Math.floor(Math.random() * 6); // Random index for correct answer
+			const optionsSet = new Set([correctTime]); // Start with the correct answer
 
-				// Generate incorrect options
+			// Generate unique options
+			while (optionsSet.size < 6) {
 				const { hour, minute } = generateRandomTime();
-				return formatTime(hour, minute);
-			});
+				const option = formatTime(hour, minute);
+
+				// Add the option only if it doesn't already exist in the set
+				optionsSet.add(option);
+			}
+
+			// Convert the Set to an array and shuffle it
+			const options = Array.from(optionsSet);
+			[options[correctIndex], options[0]] = [options[0], options[correctIndex]]; // Ensure correctTime is placed at the correctIndex
 
 			// Render options as buttons
 			options.forEach((option) => {
@@ -334,7 +341,7 @@
 						feedbackContainer.innerHTML = `${smileyIcons[Math.floor(Math.random() * smileyIcons.length)]} Correct!`;
 						feedbackContainer.style.color = "green";
 						correctSound.play();
-						setTimeout(startGame, 1000); // Start a new question after 2 seconds
+						setTimeout(startGame, 2000); // Start a new question after 2 seconds
 					} else {
 						feedbackContainer.innerHTML = `${sadIcons[Math.floor(Math.random() * sadIcons.length)]} Incorrect!`;
 						feedbackContainer.style.color = "red";
@@ -345,6 +352,7 @@
 				optionsContainer.appendChild(button);
 			});
 		}
+
 
 
         function startGame() {
