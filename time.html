@@ -285,40 +285,67 @@
             }
         }
 
+		function generateRandomTime() {
+			const hour = Math.floor(Math.random() * 12) || 12;
+			let minute;
+
+			switch (currentLevel) {
+				case 1: // Only whole hours
+					minute = 0;
+					break;
+				case 2: // 0 or 30 minutes
+					minute = Math.floor(Math.random() * 2) * 30;
+					break;
+				case 3: // 0, 15, 30, 45 minutes
+					minute = Math.floor(Math.random() * 4) * 15;
+					break;
+				case 4: // Multiples of 5 minutes
+					minute = Math.floor(Math.random() * 12) * 5;
+					break;
+				default:
+					minute = 0;
+			}
+
+			return { hour, minute };
+		}
+		
         function renderOptions(correctTime) {
-            optionsContainer.innerHTML = "";
-            feedbackContainer.innerHTML = "";
+			optionsContainer.innerHTML = "";
+			feedbackContainer.innerHTML = "";
 
-            const correctIndex = Math.floor(Math.random() * 6);
-            const options = Array.from({ length: 6 }, (_, i) => {
-                if (i === correctIndex) return correctTime;
+			const correctIndex = Math.floor(Math.random() * 6); // Correct option placed at a random index
+			const options = Array.from({ length: 6 }, (_, i) => {
+				if (i === correctIndex) return correctTime;
 
-                const hour = Math.floor(Math.random() * 12) || 12;
-                const minute = Math.floor(Math.random() * (60 / 5)) * 5;
-                return formatTime(hour, minute);
-            });
+				// Generate incorrect options
+				const { hour, minute } = generateRandomTime();
+				return formatTime(hour, minute);
+			});
 
-            options.forEach((option) => {
-                const button = document.createElement("button");
-                button.className = "option";
-                button.textContent = option;
+			// Render options as buttons
+			options.forEach((option) => {
+				const button = document.createElement("button");
+				button.className = "option";
+				button.textContent = option;
 
-                button.addEventListener("click", () => {
-                    if (option === correctTime) {
-                        feedbackContainer.innerHTML = `${smileyIcons[Math.floor(Math.random() * smileyIcons.length)]} Correct!`;
-                        feedbackContainer.style.color = "green";
-                        correctSound.play();
-                        setTimeout(startGame, 2000);
-                    } else {
-                        feedbackContainer.innerHTML = `${sadIcons[Math.floor(Math.random() * sadIcons.length)]} Incorrect!`;
-                        feedbackContainer.style.color = "red";
-                        incorrectSound.play();
-                    }
-                });
+				// Handle correct and incorrect answers
+				button.addEventListener("click", () => {
+					if (option === correctTime) {
+						feedbackContainer.innerHTML = `${smileyIcons[Math.floor(Math.random() * smileyIcons.length)]} Correct!`;
+						feedbackContainer.style.color = "green";
+						correctSound.play();
+						setTimeout(startGame, 2000); // Start a new question after 2 seconds
+					} else {
+						feedbackContainer.innerHTML = `${sadIcons[Math.floor(Math.random() * sadIcons.length)]} Incorrect!`;
+						feedbackContainer.style.color = "red";
+						incorrectSound.play();
+					}
+				});
 
-                optionsContainer.appendChild(button);
-            });
-        }
+				optionsContainer.appendChild(button);
+			});
+		}
+
 
         function startGame() {
             const { hour, minute } = generateRandomTime();
