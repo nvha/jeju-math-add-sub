@@ -6,112 +6,150 @@
     <title>Choose Your Avatar</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f9fc;
-        }
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0 10px;  /* Added padding to avoid content near the edges */
+    background-color: #f7f9fc;
+}
 
-        h1 {
-            margin-top: 50px;
-            font-size: 36px;
-            color: #333;
-        }
+h1 {
+    margin-top: 50px;
+    font-size: 36px;
+    color: #333;
+}
 
-        h2 {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #555;
-        }
+h2 {
+    margin-top: 20px;
+    font-size: 28px;
+    color: #555;
+}
 
-        .avatar-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            margin-top: 50px;
-        }
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 50px;
+}
 
-        .avatar-option {
-            width: 75px;
-            height: 75px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffffff;
-            border: 2px solid #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.avatar-option {
+    width: 75px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        .avatar-option:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-        }
+.avatar-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
 
-        .avatar-image {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+.avatar-image {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        .selected-avatar {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #333;
-        }
+.selected-avatar {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
 
-        /* Enlarged avatar size */
-        .enlarged-avatar {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-top: 20px;
-        }
+.enlarged-avatar {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-top: 20px;
+}
 
-        .game-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            margin-top: 30px;
-        }
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 30px;
+}
 
-        .game-box {
-            width: 150px;
-            height: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffffff;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.game-box {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+	padding: 10px;
+}
 
-        .game-box:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-        }
+.game-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
 
-        .game-icon {
-            font-size: 50px;
-            color: #007BFF;
-        }
+.game-icon {
+    font-size: 80px;
+    color: #007BFF;
+}
 
-        .game-box p {
-            margin-top: 10px;
-            font-size: 18px;
-            color: #333;
-            font-weight: bold;
-        }
+.game-box p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Media Query for small screens (smartphones) */
+@media (max-width: 600px) {
+    body {
+        padding: 0 15px;  /* Extra padding on the sides */
+    }
+
+    .avatar-container {
+        gap: 15px;  /* Reduced gap between avatars */
+        flex-wrap: wrap; /* Allow avatars to wrap in small screens */
+    }
+
+    .game-container {
+        gap: 20px;  /* Reduced gap between game boxes */
+        flex-wrap: wrap; /* Allow game boxes to wrap on smaller screens */
+    }
+
+    .game-box {
+        width: 120px;  /* Smaller game box size */
+        height: 120px;  /* Smaller game box size */
+    }
+
+    .avatar-option {
+        width: 60px;  /* Smaller avatar options */
+        height: 60px;  /* Smaller avatar options */
+    }
+
+    .avatar-image {
+        width: 50px;  /* Smaller avatar image */
+        height: 50px;  /* Smaller avatar image */
+    }
+
+    .enlarged-avatar {
+        width: 150px;  /* Smaller enlarged avatar */
+        height: 150px;  /* Smaller enlarged avatar */
+    }
+}
+
     </style>
 </head>
 <body>
