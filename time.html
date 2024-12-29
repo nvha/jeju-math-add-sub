@@ -170,7 +170,7 @@
 
         function generateRandomTime() {
             const hour = Math.floor(Math.random() * 12) || 12;
-            const minute = Math.floor(Math.random() * 4) * 15;
+            const minute = Math.floor(Math.random() * 2) * 30;
             return { hour, minute };
         }
 
@@ -229,7 +229,7 @@
                 if (i === correctIndex) return correctTime;
 
                 const hour = Math.floor(Math.random() * 12) || 12;
-                const minute = Math.floor(Math.random() * 4) * 15;
+                const minute = Math.floor(Math.random() * 2) * 30;
                 return formatTime(hour, minute);
             });
 
