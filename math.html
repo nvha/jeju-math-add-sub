@@ -267,17 +267,19 @@
 				return;
 			}
 
+			let valid = false; // Flag to check if the generated question is valid
 			// Generate random numbers based on the selected limit
-			num1 = Math.floor(Math.random() * (limit + 1));  // num1 can be between 0 and the limit
-			num2 = Math.floor(Math.random() * (limit + 1));  // num2 can be between 0 and the limit
+			num1 = Math.floor(Math.random() * (limit)) + 1;  // num1 can be between 1 and the limit
+			num2 = Math.floor(Math.random() * (limit)) + 1;  // num2 can be between 1 and the limit
 
 			// Ensure valid operation
 			if (mode === "add") {
 				// Ensure the sum doesn't exceed the limit
-				if (num1 + num2 > limit) {
-					num1 = Math.floor(Math.random() * (limit + 1));  // Re-generate num1
-					num2 = Math.floor(Math.random() * (limit + 1));  // Re-generate num2
-				}
+				do {
+					num1 = Math.floor(Math.random() * (limit)) + 1;  // num1 can be between 1 and the limit
+					num2 = Math.floor(Math.random() * (limit)) + 1;  // num2 can be between 1 and the limit
+				} while (num1 + num2 > limit);  // Continue generating until the sum is valid
+
 				correctAnswer = num1 + num2;
 				document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
 			} else if (mode === "sub") {
@@ -288,13 +290,15 @@
 			} else {
 				// Mixed mode (either add or subtract)
 				if (Math.random() < 0.5) {
-					if (num1 + num2 > limit) {
-						num1 = Math.floor(Math.random() * (limit + 1));  // Re-generate num1
-						num2 = Math.floor(Math.random() * (limit + 1));  // Re-generate num2
-					}
+					do {
+						num1 = Math.floor(Math.random() * (limit)) + 1;  // num1 can be between 1 and the limit
+						num2 = Math.floor(Math.random() * (limit)) + 1;  // num2 can be between 1 and the limit
+					} while (num1 + num2 > limit);  // Continue generating until the sum is valid
+
 					correctAnswer = num1 + num2;
 					document.getElementById('question').textContent = `${num1} + ${num2} = ?`;
 				} else {
+					// Ensure the subtraction result is non-negative and num1 >= num2
 					if (num1 < num2) [num1, num2] = [num2, num1];  // Swap to avoid negative result
 					correctAnswer = num1 - num2;
 					document.getElementById('question').textContent = `${num1} - ${num2} = ?`;
@@ -309,21 +313,44 @@
 			document.getElementById('progress').textContent = `Question: ${questionCount}/20`;
 		}
 
+		function generateAnswers(correctAnswer) {
+			const answers = [];
 
-        function generateAnswers(correctAnswer) {
-			const answers = [correctAnswer];
+			// Create the initial list of answers
+			for (let i = -3; i <= 4; i++) {
+				answers.push(correctAnswer + i);
+			}
 
-			// Generate incorrect answers within the limit range
-			while (answers.length < 8) {
-				let randomAnswer = Math.floor(Math.random() * (limit + 1)); // Ensure it stays within the limit
-				if (!answers.includes(randomAnswer)) {
-					answers.push(randomAnswer);
+			// Adjust the left side if correctAnswer - 3 is less than 0
+			while (answers[0] < 0) {
+				// Shift the answers to the right by increasing the left values
+				for (let i = 0; i < answers.length; i++) {
+					answers[i]++;
 				}
 			}
-			
+
+			// Adjust the right side if correctAnswer + 4 exceeds the limit
+			while (answers[answers.length - 1] > limit) {
+				// Shift the answers to the left by decreasing the right values
+				for (let i = 0; i < answers.length; i++) {
+					answers[i]--;
+				}
+			}
+
+			// Ensure no values exceed the limit or go below 0
+			answers.forEach((answer, index) => {
+				if (answer > limit) {
+					answers[index] = limit;
+				}
+				if (answer < 0) {
+					answers[index] = 0;
+				}
+			});
+
 			// Shuffle answers to mix correct and incorrect ones
 			return answers.sort(() => Math.random() - 0.5);
 		}
+
 
         function checkAnswer(userAnswer) {
             if (questionAnswered) return;
